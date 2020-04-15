@@ -51,3 +51,38 @@ rule reads:
     shell:
         "samtools bam2fq -1 {output[0]} -2 {output[1]} "
         "<(samtools view -b -s{params.seed}.2 {params.url} chr{wildcards.chrom})"
+
+
+rule bwa_index:
+    input:
+        "ref/genome.chr{chrom}.fa"
+    output:
+        multiext("ref/genome.chr{chrom}",
+                 ".amb", ".ann", ".bwt", ".pac", ".sa")
+    params:
+        prefix="ref/genome.chr{chrom}",
+        algorithm="bwtsw"
+    wrapper:
+        "0.50.4/bio/bwa/index"
+
+
+rule create_dict:
+    input:
+        "ref/genome.chr{chrom}.fa"
+    output:
+        "ref/genome.chr{chrom}.dict"
+    params:
+        extra=""  # optional: extra arguments for picard.
+    wrapper:
+        "0.50.4/bio/picard/createsequencedictionary"
+
+
+rule samtools_index:
+    input:
+        "ref/genome.chr{chrom}.fa"
+    output:
+        "ref/genome.chr{chrom}.fa.fai"
+    params:
+        "" # optional params string
+    wrapper:
+        "0.50.4/bio/samtools/faidx"
