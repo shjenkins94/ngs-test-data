@@ -10,7 +10,10 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(["ref/annotation.chr{chrom}.gtf",
-                "ref/genome.chr{chrom}.fa"], chrom=config["chrom"]),
+                "ref/genome.chr{chrom}.fa",
+                "ref/genome.chr{chrom}.amb",
+                "ref/genome.chr{chrom}.dict",
+                "ref/genome.chr{chrom}.fa.fai"], chrom=config["chrom"]),
         expand("reads/{sample}.chr{chrom}.{group}.fq", 
                group=[1, 2], sample=["a", "b"], chrom=config["chrom"])
 
