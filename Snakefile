@@ -10,12 +10,15 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(["ref/annotation.chr{chrom}.gtf",
-                "ref/genome.chr{chrom}.fa",
-                "ref/genome.chr{chrom}.amb",
-                "ref/genome.chr{chrom}.dict",
-                "ref/genome.chr{chrom}.fa.fai"], chrom=config["chrom"]),
-        expand("reads/{sample}.chr{chrom}.{group}.fq", 
+                "ref/genome.chr{chrom}.fa"], chrom=config["chrom"]),
+        expand("reads/{sample}.chr{chrom}.{group}.fq",
                group=[1, 2], sample=["a", "b"], chrom=config["chrom"])
+
+
+rule all_gatk:
+    input:
+        expand("ref/genome.chr{chrom}.{ext}", chrom=config["chrom"],
+               ext=["amb", "ann", "bwt", "pac", "sa", "fa.fai"])
 
 
 rule annotation:
@@ -34,6 +37,7 @@ rule genome:
         "ref/genome.chr{chrom}.fa"
     shell:
         "gzip -d -c {input} > {output}"
+
 
 rule transcriptome:
     output:
@@ -69,7 +73,7 @@ rule bwa_index:
         "0.50.4/bio/bwa/index"
 
 
-rule create_dict:
+rule picard_dict:
     input:
         "ref/genome.chr{chrom}.fa"
     output:

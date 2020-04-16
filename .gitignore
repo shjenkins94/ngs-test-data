@@ -16,6 +16,11 @@ scripts/.snakemake*
 !README.md
 !rules
 !rules/*
+!reads
+!reads/*.scerevisiae.*
+!ref
+!ref/dbsnp*
+!ref/dummy.gmt
 !.gitignore
 !.gitattributes
 !.editorconfig
